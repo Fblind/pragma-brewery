@@ -6,7 +6,7 @@ function initializeRouter (app, dependencies) {
 
   const GetBeers = require('./handlers/get-beers')
   const getBeers = new GetBeers()
-  router.get('/', getBeers.handler)
+  router.get('/', getBeers.handler())
 
   return router
 }

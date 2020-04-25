@@ -1,7 +1,10 @@
 const Beer = require('../models/beer')
+const ResponseUtils = require('../../reponse-utils')
 class GetBeers {
   // constructor ({}) {}
-  static getErrorMessage () {}
+  static getErrorMessage (error) {
+    return error
+  }
 
   static validateRequest (req) {}
   static formatResponse (beers) {
@@ -9,14 +12,14 @@ class GetBeers {
   }
 
   handler (req, res) {
-    try {
-      // GetBeers.validateRequest(req)
-      const beers = Beer.find({})
-      // Response.success(GetBeers.formatResponse(beers))(res)
-      return res.json({ data: beers })
-    } catch (error) {
-      // const mapError = GetBeers.getErrorMessage(error)
-      // Response.error(mapError)
+    return async (req, res) => {
+      try {
+        // GetBeers.validateRequest(req)
+        const beers = Beer.find({})
+        return ResponseUtils.success(res)(GetBeers.formatResponse(beers))
+      } catch (error) {
+        return ResponseUtils.error(res, GetBeers.getErrorMessage(error))
+      }
     }
   }
 }
