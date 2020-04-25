@@ -1,0 +1,30 @@
+{
+  "name": "praga-brewery",
+  "version": "1.0.0",
+  "description": "Pragma Brewery assessment",
+  "main": "index.js",
+  "config": {
+    "testFiles": "server/**/tests/**/*.spec.js"
+  },
+  "scripts": {
+    "test": "NODE_ENV=test node_modules/mocha/bin/mocha $npm_package_config_testFiles",
+    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w $npm_package_config_testFiles",
+    "start": "node ./server/index.js"
+  },
+  "author": "Facundo Soria Guerrero (fblind@gmail.com)",
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "mocha": "^7.1.1",
+    "supertest": "^4.0.2"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
