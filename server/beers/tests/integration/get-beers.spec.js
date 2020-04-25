@@ -12,6 +12,7 @@ describe('GET /beers', () => {
       .get(path)
       .expect(200)
   }
+
   it('should response 200', async () => {
     const response = await sut()
     expect(response.status).to.equal(200)

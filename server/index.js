@@ -1,10 +1,19 @@
 const express = require('express')
+const axios = require('axios')
+const BeerService = require('./beers/services/beer')
 const app = express()
 // TODO: use logger
 // TODO: create own config file
+// TODO: set up files
 const config = { port: 3000 }
+app.use(express.json())
 
-app.use('/beers', require('./beers/router'))
+function intializeServices () {
+  const beerService = new BeerService({ apiClient: axios })
+  return { beerService }
+}
+const { beerService } = intializeServices()
+app.use('/beers', require('./beers/router')(app, { beerService }))
 
 module.exports = app
 

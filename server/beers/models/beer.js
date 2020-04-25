@@ -1,6 +1,20 @@
 class Beer {
+  static validTypes () {
+    return ['pilsner', 'ipa', 'lager', 'stout', 'wheat', 'paleAle']
+  }
+
+  static getTemperatureValidation (type, temperature) {
+    const beerType = Beer.find({ type })
+    const { refrigeration } = beerType
+    const beerInfo = { refrigeration, type, currentTemperature: temperature }
+    if (temperature < refrigeration.min || temperature > refrigeration.max) {
+      return { ...beerInfo, valid: false }
+    }
+    return { ...beerInfo, valid: true }
+  }
+
   static find (query) {
-    return [{
+    const beers = [{
       type: 'pilsner',
       name: 'Pilsner',
       refrigeration: {
@@ -43,6 +57,11 @@ class Beer {
         max: 6
       }
     }]
+
+    if (query && query.type) {
+      return beers.find((beer) => beer.type === query.type)
+    }
+    return beers
   }
 }
 
