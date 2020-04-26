@@ -11,7 +11,7 @@ class GetBeers {
     return beers
   }
 
-  handler (req, res) {
+  handler () {
     return async (req, res) => {
       try {
         // GetBeers.validateRequest(req)

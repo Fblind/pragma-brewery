@@ -6,7 +6,7 @@ class Beer {
   static getTemperatureValidation (type, temperature) {
     const beerType = Beer.find({ type })
     const { refrigeration } = beerType
-    const beerInfo = { refrigeration, type, currentTemperature: temperature }
+    const beerInfo = { ...beerType, currentTemperature: temperature }
     if (temperature < refrigeration.min || temperature > refrigeration.max) {
       return { ...beerInfo, valid: false }
     }

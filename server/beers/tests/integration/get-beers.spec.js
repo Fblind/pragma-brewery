@@ -27,7 +27,7 @@ describe('GET /beers', () => {
     const { body } = await sut()
     const beers = body.data
     for (const beer of beers) {
-      expect(beer).to.include.all.keys('type', 'refrigeration')
+      expect(Object.keys(beer)).to.deep.equal(['type', 'name', 'refrigeration'])
     }
   })
 })

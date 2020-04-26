@@ -58,6 +58,7 @@ describe('Beer Model', () => {
     it('should return an object with all current information of the beer and valid: true when temperature of the beer is between valid values', () => {
       expect(sut()).to.deep.equal({
         refrigeration: { min: 4, max: 6 },
+        name: 'Pale Ale',
         type: 'paleAle',
         currentTemperature: temperature,
         valid: true
@@ -69,6 +70,7 @@ describe('Beer Model', () => {
       temperature = 1
       expect(sut()).to.deep.equal({
         refrigeration: { min: 6, max: 8 },
+        name: 'Stout',
         type: 'stout',
         currentTemperature: temperature,
         valid: false

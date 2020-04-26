@@ -1,15 +1,15 @@
 const request = require('supertest')
 const { expect } = require('chai')
 const nock = require('nock')
+const Beer = require('../../models/beer')
 const app = require('../../../index')
-const path = '/beers'
+const path = '/beers/refrigeration-status'
 
-describe('GET /beers/:type/refrigeration-status', () => {
+describe('GET /beers/refrigeration-status', () => {
   let nockTemperatureSensor = null
-  let type = null
   let temperature = null
+  const validBeers = Beer.validTypes()
   beforeEach(() => {
-    type = 'pilsner'
     temperature = 5
   })
 
@@ -19,37 +19,19 @@ describe('GET /beers/:type/refrigeration-status', () => {
 
   function nockApis () {
     nockTemperatureSensor = nock('https://temperature-sensor-service.herokuapp.com')
-      .get(`/sensor/${type}`)
-      .reply(200, { id: type, temperature })
+    for (const beer of validBeers) {
+      nockTemperatureSensor
+        .get(`/sensor/${beer}`)
+        .reply(200, { id: beer, temperature })
+    }
   }
 
   function sut (statusCode = 200) {
     nockApis()
     return request(app)
-      .get(`${path}/${type}/refrigeration-status`)
+      .get(path)
       .expect(statusCode)
   }
-
-  it('should response 400 if type is not valid', async () => {
-    type = 'invalid'
-    const response = await sut(400)
-    expect(response.status).to.equal(400)
-  })
-
-  it('should response 400 WRONG_DATA if type is not valid', async () => {
-    type = 'invalid'
-    const { body } = await sut(400)
-    expect(body).to.deep.equal({
-      code: 'INVALID_TYPE',
-      message: 'Type is not valid, should be one of [pilsner, ipa, lager, stout, wheat, paleAle]'
-    })
-  })
-
-  it('should not send a request to get the temperature when there is an error at the request level', async () => {
-    type = 'invalid'
-    await sut(400)
-    expect(nockTemperatureSensor.pendingMocks()).to.have.length(1)
-  })
 
   it('should response 200', async () => {
     const response = await sut()
@@ -61,27 +43,17 @@ describe('GET /beers/:type/refrigeration-status', () => {
     expect(nockTemperatureSensor.pendingMocks()).to.have.length(0)
   })
 
-  it('should response 200 with status value in the response', async () => {
+  it('should response 200 with valid beers status value in the response', async () => {
     const { body } = await sut()
-    expect(body.data).to.include.all.keys('refrigerationStatus')
+    expect(body.data).to.have.length(validBeers.length)
   })
 
-  it('should response 200 with status fail in the response', async () => {
-    temperature = 2
+  it('should response 200 with all beers containing the response object', async () => {
     const { body } = await sut()
-    expect(body).to.deep.equal({
-      data: {
-        refrigerationStatus: false
-      }
-    })
-  })
-
-  it('should response 200 with status ok in the response', async () => {
-    const { body } = await sut()
-    expect(body).to.deep.equal({
-      data: {
-        refrigerationStatus: true
-      }
-    })
+    const beers = body.data
+    for (const beer of beers) {
+      expect(Object.keys(beer)).to.deep.equal(['type', 'name', 'refrigeration', 'currentTemperature', 'valid'])
+      expect(Object.keys(beer.refrigeration)).to.deep.equal(['min', 'max'])
+    }
   })
 })
