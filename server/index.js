@@ -1,4 +1,5 @@
 const express = require('express')
+const path = require('path')
 const axios = require('axios')
 const BeerService = require('./beers/services/beer')
 const app = express()
@@ -15,6 +16,10 @@ function intializeServices () {
 const { beerService } = intializeServices()
 app.use('/beers', require('./beers/router')(app, { beerService }))
 
+app.use('/dist', express.static(path.join(__dirname, '../client/dist')))
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/index.html'))
+})
 module.exports = app
 
 // Listening Server
