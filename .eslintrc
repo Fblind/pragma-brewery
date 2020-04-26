@@ -1,4 +1,7 @@
 {
-  "extends": "standard",
-  "env": {"mocha": true}
+  "extends": [
+    "plugin:vue/recommended",
+    "standard"
+  ],
+  "env": {"mocha": true},
 }
